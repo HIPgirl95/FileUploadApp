@@ -33,6 +33,7 @@ async function listBuckets() {
 listBuckets();
 //create express app
 const app = express();
+app.use(express.static("public"));
 
 //list files in s3 bucket
 app.get("/images", async (req, res) => {
@@ -58,6 +59,28 @@ app.post("/images", upload.single("image"), async (req, res) => {
   const response = await s3Client.send(new PutObjectCommand(uploadParams));
   res.send(response);
 });
+
+// app.get("/images/:imageKey", (req, res) => {
+//   const imageKey = req.params.imageKey;
+
+//   const params = {
+//     Bucket: bucket, // Name of your local S3 bucket
+//     Key: fileName, // The key of the image you want to retrieve
+//   };
+
+//   // Retrieve the image from the S3 bucket
+//   s3.getObject(params, (err, data) => {
+//     if (err) {
+//       return res.status(500).send("Error retrieving image from S3");
+//     }
+
+//     // Set the appropriate content type for the image
+//     res.setHeader("Content-Type", data.ContentType);
+
+//     // Send the image data as the response
+//     res.send(data.Body);
+//   });
+// });
 
 app.listen(3000, () => {
   console.log("app listening on port 3000");

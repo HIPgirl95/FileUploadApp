@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>File Upload Site</title>
+  </head>
+  <body>
+    <button id="list">List images in bucket</button>
+    <form action="/images" method="POST" enctype="multipart/form-data">
+      <input type="file" name="image" />
+      <button id="upload">Upload image</button>
+    </form>
+
+    <button id="retrieve">Display image</button>
+
+    <script>
+      const listButton = document.getElementById("list");
+
+      listButton.addEventListener("click", function () {
+        fetch("/images", { method: "GET" })
+          .then((response) => response.text())
+          .then((text) => console.log(text));
+      });
+    </script>
+    <!-- <script>
+      const retrieveButton = document.getElementById("retrieve");
+
+      retrieveButton.addEventListener("click", function () {
+        fetch("/images", { method: "GET" })
+          .then((response) => response.text())
+          .then((text) => console.log(text));
+      });
+    </script> -->
+  </body>
+</html>
