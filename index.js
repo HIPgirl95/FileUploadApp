@@ -5,6 +5,8 @@ const {
   PutObjectCommand,
 } = require("@aws-sdk/client-s3");
 
+const fs = require("fs");
+
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
@@ -42,7 +44,13 @@ app.get("/images", async (req, res) => {
   };
   listObjectsCmd = new ListObjectsV2Command(listObjectsParams);
   const response = await s3Client.send(listObjectsCmd);
-  res.send(response);
+
+  const imageFiles = (response.Contents || [])
+    .filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file.Key))
+    .map((file) => file.Key); // Return an array of filenames
+
+  // Send the array of filenames as JSON
+  res.json(imageFiles);
 });
 
 //create images

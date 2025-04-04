@@ -8,9 +8,11 @@
     <form action="/images" method="POST" enctype="multipart/form-data">
       <input type="file" name="image" />
       <button id="upload">Upload image</button>
+      <img />
     </form>
 
     <button id="retrieve">Display image</button>
+    <div id="gallery"></div>
 
     <script>
       const listButton = document.getElementById("list");
@@ -21,14 +23,37 @@
           .then((text) => console.log(text));
       });
     </script>
-    <!-- <script>
+    <script>
       const retrieveButton = document.getElementById("retrieve");
 
       retrieveButton.addEventListener("click", function () {
         fetch("/images", { method: "GET" })
-          .then((response) => response.text())
-          .then((text) => console.log(text));
+          .then((res) => res.json())
+          .then((files) => {
+            console.log("Received from /s3-images:", files); // 👈 Check this
+
+            // Ensure it's an array
+            if (!Array.isArray(files)) {
+              throw new Error("Response is not an array");
+            }
+
+            const gallery = document.getElementById("gallery");
+            gallery.innerHTML = "";
+
+            const imageElements = files.map((file) => {
+              const img = document.createElement("img");
+              img.src = `http://localhost:4566/hannahhoganbucket/${file}`; // LocalStack S3 URL
+              img.alt = file;
+              console.log("Generated image URL:", img.src);
+              return img;
+            });
+
+            imageElements.forEach((img) => gallery.appendChild(img));
+          })
+          .catch((err) => {
+            console.error("Error loading S3 images:", err);
+          });
       });
-    </script> -->
+    </script>
   </body>
 </html>
