@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>File Upload Site</title>
+  </head>
+  <body>
+    <button id="list">List images in bucket</button>
+    <form action="/images" method="post" enctype="multipart/form-data">
+      <input type="file" name="image" />
+      <button id="upload">Upload image</button> <img />
+    </form>
+    <button id="retrieve">Display image</button>
+    <div id="gallery"></div>
+    <script>
+      let listButton = document.getElementById("list");
+      listButton.addEventListener("click", function () {
+        fetch("/images", { method: "GET" })
+          .then((t) => t.text())
+          .then((t) => console.log(t));
+      });
+    </script>
+    <script>
+      let retrieveButton = document.getElementById("retrieve");
+      retrieveButton.addEventListener("click", function () {
+        fetch("/images", { method: "GET" })
+          .then((e) => e.json())
+          .then((e) => {
+            if (
+              (console.log("Received from /s3-images:", e), !Array.isArray(e))
+            )
+              throw Error("Response is not an array");
+            let t = document.getElementById("gallery");
+            (t.innerHTML = ""),
+              e
+                .map((e) => {
+                  let t = document.createElement("img");
+                  return (
+                    (t.src = `http://localhost:4566/hannahhoganbucket/${e}`),
+                    (t.alt = e),
+                    console.log("Generated image URL:", t.src),
+                    t
+                  );
+                })
+                .forEach((e) => t.appendChild(e));
+          })
+          .catch((e) => {
+            console.error("Error loading S3 images:", e);
+          });
+      });
+    </script>
+  </body>
+</html>
