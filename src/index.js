@@ -56,13 +56,13 @@ app.get("/images", async (req, res) => {
 //create images
 app.post("/images", upload.single("image"), async (req, res) => {
   const file = req.file;
-  const fileName = req.file.originalname;
+  const fileStream = fs.createReadStream(file.path);
   console.log(file, fileName);
   const uploadParams = {
     Bucket: bucket,
-    Key: fileName,
-    Body: req.file.buffer,
-    ContentType: req.file.mimetype, // Preserve file type
+    Key: file.originalname,
+    Body: fileStream,
+    ContentType: file.mimetype, // Preserve file type
   };
   const response = await s3Client.send(new PutObjectCommand(uploadParams));
   res.send(response);

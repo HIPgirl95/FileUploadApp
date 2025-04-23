@@ -42,7 +42,7 @@
 
             const imageElements = files.map((file) => {
               const img = document.createElement("img");
-              img.src = `http://localhost:4566/hannahhoganbucket/${file}`; // LocalStack S3 URL
+              img.src = `http://localhost:4566/upload-images-hh/${file}`; // LocalStack S3 URL
               img.alt = file;
               console.log("Generated image URL:", img.src);
               return img;
